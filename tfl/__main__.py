@@ -1,12 +1,9 @@
 import typer
 
-app = typer.Typer(add_completion=False)
+from tfl.cli import cycles
 
-
-@app.command()
-def hello(name: str):
-    print(f"Hello {name}")
-
+app = typer.Typer()
+app.add_typer(cycles.app, name="cycles")
 
 if __name__ == "__main__":
     app()
