@@ -19,4 +19,4 @@ major:
 	$(TOOL_RUN) bumpversion major
 
 test:
-	echo "No tests for now!"
+	$(TOOL_RUN) pytest tests
