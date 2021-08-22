@@ -1,6 +1,6 @@
 import pytest
 
-from tfl.entities.factory import from_json, from_json_obj
+from tfl.api.factory import from_json, from_json_obj
 
 
 @pytest.fixture

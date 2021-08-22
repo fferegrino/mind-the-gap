@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class AdditionalProperty:
+class AdditionalProperties:
     category: str
     key: str
     sourceSystemKey: str

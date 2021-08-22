@@ -1,20 +1,27 @@
+import importlib
 import inspect
+import pkgutil
 import re
 from typing import Any, Dict, List, Union
 
-from tfl.entities.additional_property import AdditionalProperty
-from tfl.entities.place import Place
+import tfl.api.presentation.entities
 
-TYPES = {
-    "Tfl.Api.Presentation.Entities.Place": Place,
-    "Tfl.Api.Presentation.Entities.AdditionalProperties": AdditionalProperty,
-}
+
+def iter_namespace(ns_pkg):
+    return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
+
+
+TYPES = dict()
+for finder, name, ispkg in iter_namespace(tfl.api.presentation.entities):
+    module = importlib.import_module(name)
+    for class_name, class_spec in inspect.getmembers(module, inspect.isclass):
+        TYPES[f"tfl.api.presentation.entities.{class_name.lower()}"] = class_spec
 
 
 def get_type(json: Dict[str, Any]) -> Any:
     if _type := json.get("$type"):
         first, _, _ = _type.partition(",")
-        return TYPES[first]
+        return TYPES[first.lower()]
     return None
 
 
