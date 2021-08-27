@@ -25,7 +25,7 @@ def get_type(json: Dict[str, Any]) -> Any:
     return None
 
 
-BASE_TYPES = {"str", "float"}
+BASE_TYPES = {"str", "float", "bool", "int"}
 
 LST_RE = re.compile(r"List\[(\w+)\]")
 
@@ -57,5 +57,8 @@ def from_json_obj(json: Dict[str, Any]):
                         collection.append(from_json_obj(inner_json))
                     class_kwargs[arg] = collection
 
-    resource = entity_type(**class_kwargs)
+    try:
+        resource = entity_type(**class_kwargs)
+    except TypeError as type_error:
+        raise TypeError(str(entity_type)) from type_error
     return resource
