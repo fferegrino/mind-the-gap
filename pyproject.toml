@@ -12,7 +12,7 @@ packages = [
 tfl = 'tfl.__main__:app'
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 typer = {version= "^0.3.2", optional = true }
 requests = "^2.26.0"
 
