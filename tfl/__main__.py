@@ -1,4 +1,11 @@
-import typer
+try:
+    import typer
+except ImportError as import_error:
+    raise ImportError(
+        "You don't have Typer installed, "
+        "install this package with the [cli] extra:\n"
+        "pip install mind-the-gap[cli]"
+    ) from import_error
 
 from tfl.cli import cycles
 
