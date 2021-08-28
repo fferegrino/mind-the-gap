@@ -15,9 +15,10 @@ tfl = 'tfl.__main__:app'
 python = "^3.7"
 typer = {version= "^0.3.2", optional = true }
 requests = "^2.26.0"
+rich ={version= "^10.8.0", optional = true }
 
 [tool.poetry.extras]
-cli = ["typer"]
+cli = ["typer", "rich"]
 
 [tool.poetry.dev-dependencies]
 black = "^20.*"

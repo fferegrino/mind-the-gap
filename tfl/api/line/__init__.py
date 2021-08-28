@@ -15,6 +15,7 @@ def by_id(*ids: Tuple[str, ...], status=False):
     return from_json(json)
 
 
-def by_mode(mode: str):
-    json = requests.get(f"{ENDPOINT}/Mode/{mode}").json()
+def by_mode(mode: str, status=False):
+    endpoint = f"{ENDPOINT}/Mode/{mode}" + ("/Status" if status else "")
+    json = requests.get(endpoint).json()
     return from_json(json)
