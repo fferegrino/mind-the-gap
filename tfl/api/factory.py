@@ -28,6 +28,7 @@ def get_type(json: Dict[str, Any]) -> Any:
 BASE_TYPES = {"str", "float", "bool", "int"}
 
 LST_RE = re.compile(r"List\[(\w+)\]")
+OPTIONAL_RE = re.compile(r"Optional\[(\w+)\]")
 
 
 def from_json(json: Union[List, Dict]):
@@ -42,20 +43,30 @@ def from_json_obj(json: Dict[str, Any]):
 
     # Fill out arguments
     class_kwargs = dict()
-    for arg in argspec.args[1:]:
-        annotation = str(argspec.annotations[arg])
-        if annotation in BASE_TYPES:
-            class_kwargs[arg] = json[arg]
-        else:
-            if match := LST_RE.match(annotation):  # it is a list of things
-                base_type = match.groups()[0]
-                if base_type in BASE_TYPES:
-                    class_kwargs[arg] = json.get(arg, None)
-                else:
-                    collection = []
-                    for inner_json in json.get(arg, list()):
-                        collection.append(from_json_obj(inner_json))
-                    class_kwargs[arg] = collection
+    try:
+        for arg in argspec.args[1:]:
+            annotation = str(argspec.annotations[arg])
+            if annotation in BASE_TYPES:
+                class_kwargs[arg] = json[arg]
+            else:
+                if match := LST_RE.match(annotation):  # it is a list of things
+                    base_type = match.groups()[0]
+                    if base_type in BASE_TYPES:
+                        class_kwargs[arg] = json.get(arg, None)
+                    else:
+                        collection = []
+                        for inner_json in json.get(arg, list()):
+                            collection.append(from_json_obj(inner_json))
+                        class_kwargs[arg] = collection
+                elif match := OPTIONAL_RE.match(annotation):
+                    base_type = match.groups()[0]
+                    if base_type in BASE_TYPES:
+                        class_kwargs[arg] = json.get(arg, None)
+                    else:
+                        if inner_json := json.get(arg, None):
+                            class_kwargs[arg] = from_json_obj(inner_json)
+    except KeyError as key_error:
+        raise TypeError(f"JSON data for type {entity_type} does not contain key") from key_error
 
     try:
         resource = entity_type(**class_kwargs)

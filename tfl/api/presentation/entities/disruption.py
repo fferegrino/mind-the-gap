@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from tfl.api.presentation.entities.additional_properties import AdditionalProperties
 
@@ -37,64 +37,63 @@ class Identifier:
 @dataclass
 class RouteSection:
     id: str
-    lineId: str
-    routeCode: str
     name: str
-    lineString: str
     direction: str
     originationName: str
     destinationName: str
-    validTo: str
-    validFrom: str
     routeSectionNaptanEntrySequence: List[RouteSectionNaptanEntrySequence]
-    pass
+    lineId: Optional[str] = None
+    routeCode: Optional[str] = None
+    lineString: Optional[str] = None
+    validTo: Optional[str] = None
+    validFrom: Optional[str] = None
 
 
 @dataclass
 class StopPoint:
     naptanId: str
-    platformName: str
-    indicator: str
-    stopLetter: str
     modes: List[str]
-    icsCode: str
-    smsCode: str
-    stopType: str
     stationNaptan: str
-    accessibilitySummary: str
-    hubNaptanCode: str
     lines: List[Identifier]
     linesGroup: List[LineGroup]
     lineModeGroups: List[LineModeGroup]
-    fullName: str
-    naptanMode: str
     status: bool
     id: str
-    url: str
     commonName: str
-    distance: float
-    placeType: str
     additionalProperties: List[AdditionalProperties]
     children: List[StopPoint]
     childrenUrl: List[str]
     lat: float
     lon: float
+    platformName: Optional[str] = None
+    indicator: Optional[str] = None
+    stopLetter: Optional[str] = None
+    smsCode: Optional[str] = None
+    stopType: Optional[str] = None
+    accessibilitySummary: Optional[str] = None
+    fullName: Optional[str] = None
+    naptanMode: Optional[str] = None
+    url: Optional[str] = None
+    hubNaptanCode: Optional[str] = None
+    icsCode: Optional[str] = None
+    placeType: Optional[str] = None
+    distance: Optional[float] = None
 
 
 @dataclass
 class RouteSectionNaptanEntrySequence:
     ordinal: int
-    stopPoint: StopPoint
+    stopPoint: Optional[StopPoint] = None
 
 
 @dataclass
 class Disruption:
     category: str
-    type: str
     categoryDescription: str
     description: str
     created: str
-    lastUpdate: str
     affectedRoutes: List[RouteSection]
     affectedStops: List[StopPoint]
     closureText: str
+    type: Optional[str] = None
+    lastUpdate: Optional[str] = None
