@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mind-the-gap"
-version = "2.0.0"
+version = "2.1.0"
 description = "TFL"
 authors = ["Antonio Feregrino <antonio.feregrino@gmail.com>"]
 license = "MIT"
@@ -32,7 +32,7 @@ pytest = "^6.2.4"
 
 
 [build-system]
-requires = ["poetry-core>=2.0.0"]
+requires = ["poetry-core>=2.1.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
