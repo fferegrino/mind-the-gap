@@ -47,5 +47,5 @@ def by_id(id: str) -> Place:
 
 
 def search(query: str) -> List[Place]:
-    json = get_tfl_json(f"{ENDPOINT}/Search", params=data)
+    json = get_tfl_json(f"{ENDPOINT}/Search", params={"query": query})
     return from_json(json)

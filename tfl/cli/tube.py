@@ -8,14 +8,14 @@ from rich.style import Style
 from rich.table import Table
 from rich.theme import Theme
 
+from tfl.api.line import by_id, by_mode
+from tfl.api.presentation.entities.line import LineStatus
+
 table = Table(box=box.SIMPLE, padding=0)
 
 table.add_column("Line", justify="right", style="cyan", no_wrap=True)
 table.add_column("Status", style="magenta")
 
-
-from tfl.api.line import by_id, by_mode
-from tfl.api.presentation.entities.line import LineStatus
 
 padding = 18
 
@@ -44,9 +44,7 @@ status_severity_style = {"good_service": Style(color="green")}
 
 def summarise_statuses(statuses: List[LineStatus]) -> str:
 
-    agg = [
-        #        f"{status.statusSeverity}({status.statusSeverityDescription}){status.validityPeriods}" for status in statuses
-    ]
+    agg = []
     for status in statuses:
         for validity_period in status.validityPeriods:
             from_date = parse(validity_period.fromDate)
