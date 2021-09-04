@@ -91,9 +91,9 @@ class Disruption:
     category: str
     categoryDescription: str
     description: str
-    created: str
     affectedRoutes: List[RouteSection]
     affectedStops: List[StopPoint]
     closureText: str
+    created: Optional[str] = None
     type: Optional[str] = None
     lastUpdate: Optional[str] = None

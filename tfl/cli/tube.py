@@ -1,9 +1,18 @@
 from typing import List, Optional
 
 import typer
+from dateparser import parse
+from rich import box
 from rich.console import Console
 from rich.style import Style
+from rich.table import Table
 from rich.theme import Theme
+
+table = Table(box=box.SIMPLE, padding=0)
+
+table.add_column("Line", justify="right", style="cyan", no_wrap=True)
+table.add_column("Status", style="magenta")
+
 
 from tfl.api.line import by_id, by_mode
 from tfl.api.presentation.entities.line import LineStatus
@@ -36,9 +45,20 @@ status_severity_style = {"good_service": Style(color="green")}
 def summarise_statuses(statuses: List[LineStatus]) -> str:
 
     agg = [
-        f"{status.statusSeverity}({status.statusSeverityDescription}){status.validityPeriods}" for status in statuses
+        #        f"{status.statusSeverity}({status.statusSeverityDescription}){status.validityPeriods}" for status in statuses
     ]
-    # for status in statuses:
+    for status in statuses:
+        for validity_period in status.validityPeriods:
+            from_date = parse(validity_period.fromDate)
+            to_date = parse(validity_period.toDate)
+            is_now = validity_period.isNow
+            agg.append(
+                from_date.strftime("%m/%d/%Y, %H:%M:%S")
+                + " "
+                + to_date.strftime("%m/%d/%Y, %H:%M:%S")
+                + " "
+                + str(is_now)
+            )
     #     if status.statusSeverity == 10:
     #         agg.append("[good_service]Good service[/good_service]")
 
@@ -54,7 +74,7 @@ def status(line: Optional[str] = typer.Argument(None)) -> None:
         show_all_statuses()
     else:
         line_data = by_id(line, status=True, detail=True)[0]
-        console.print(f"[{line_data.id}]{line_data.name}[/{line_data.id}]")
+        console.print(f" [{line_data.id}]{line_data.name}[/{line_data.id}] ")
         for status in line_data.lineStatuses:
             console.print(status.disruption.description)
 
@@ -64,4 +84,5 @@ def show_all_statuses():
     for mode in ["dlr", "overground", "tube"]:
         lines.extend(by_mode(mode, status=True))
     for line in lines:
-        console.print(f" [{line.id}]{line.id:>18} [/{line.id}]" + summarise_statuses(line.lineStatuses))
+        table.add_row(f" [{line.id}]{line.id:>18} [/{line.id}]", summarise_statuses(line.lineStatuses))
+    console.print(table)
